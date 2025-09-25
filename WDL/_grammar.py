@@ -65,6 +65,7 @@ task: "task" CNAME "{" task_section* command task_section* "}"
              | output_decls
              | meta_section
              | requirements_section
+             | hints_section
              | task_env_decl -> noninput_decl
 
 tasks: task*
@@ -89,6 +90,12 @@ meta_kv: CNAME ":" meta_value
 // task requirements section (key-expression pairs); some mixing with vestigial (pre-1.2) "runtime" terminology
 requirements_section: ("requirements" | "runtime") "{" [runtime_kv (","? runtime_kv)*] "}"
 runtime_kv: CNAME ":" expr
+
+// task hints
+hints_section: "hints" hints_object
+hints_kv: CNAME ":" hints_expr
+hints_object: "{" [hints_kv (","? hints_kv)*] "}"
+!hints_expr: (("hints" | "input" | "output") hints_object) | expr
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // decl

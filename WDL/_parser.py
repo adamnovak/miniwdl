@@ -407,6 +407,38 @@ class _DocTransformer(_ExprTransformer):
             d[k] = v
         return {"runtime": d}
 
+    def hints_expr(self, meta, items):
+        if isinstance(items[0], Expr.Base):
+            # This is a plain expression
+            return items[0]
+        else:
+            # This must be a sub-hint
+            hint_type = items[0].value
+            assert hint_type in ["hints", "input", "output"]
+            hint_object = items[1]
+            assert isinstance(items[1], dict)
+            # TODO: should nested scoped-typed things be represented as type ->
+            # vaue dicts, or as tuples, or as something else?
+            return {hint_type: items[1]}
+
+    def hints_kv(self, meta, items):
+        return (items[0].value, items[1])
+
+    def hints_object(self, meta, items):
+        d = dict()
+        assert all(isinstance(item, tuple) and len(item) == 2 for item in items)
+        for k, v in items:
+            if k in d:
+                raise Error.MultipleDefinitions(
+                    self._sp(meta), f"duplicate keys in hint"
+                )
+            d[k] = v
+        return d
+
+    def hints_section(self, meta, items):
+        assert isinstance(items[0], dict)
+        return {"hints": items[0]}
+
     def task(self, meta, items):
         d = {"noninput_decls": []}
         for item in items:
