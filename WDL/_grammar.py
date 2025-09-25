@@ -95,7 +95,9 @@ runtime_kv: CNAME ":" expr
 hints_section: "hints" hints_object
 hints_kv: CNAME ":" hints_expr
 hints_object: "{" [hints_kv (","? hints_kv)*] "}"
-!hints_expr: (("hints" | "input" | "output") hints_object) | expr
+input_output_kv: namespaced_ident ":" hints_expr
+input_output_object: "{" [input_output_kv (","? input_output_kv)*] "}"
+!hints_expr: (("hints") hints_object | ("input" | "output") input_output_object) | expr
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // decl

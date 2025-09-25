@@ -435,6 +435,20 @@ class _DocTransformer(_ExprTransformer):
             d[k] = v
         return d
 
+    def input_output_kv(self, meta, items):
+        return (tuple(items[0]), items[1])
+
+    def input_output_object(self, meta, items):
+        d = dict()
+        assert all(isinstance(item, tuple) and len(item) == 2 for item in items)
+        for k, v in items:
+            if k in d:
+                raise Error.MultipleDefinitions(
+                    self._sp(meta), f"duplicate keys in input/output scoped type"
+                )
+            d[k] = v
+        return d
+
     def hints_section(self, meta, items):
         assert isinstance(items[0], dict)
         return {"hints": items[0]}
