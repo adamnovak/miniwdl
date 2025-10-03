@@ -253,7 +253,8 @@ class _DocTransformer(_ExprTransformer):
 
     def left_name(self, meta, items) -> Expr.Base:
         ans = super().left_name(meta, items)
-        self._check_keyword(ans.pos, items[0])
+        if self._version != "1.2" or items[0] != "task":
+            self._check_keyword(ans.pos, items[0])
         return ans
 
     def get_name(self, meta, items) -> Expr.Base:
