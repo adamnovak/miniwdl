@@ -385,6 +385,42 @@ class TestTasks(unittest.TestCase):
         task.typecheck()
         self.assertEqual([e.value for e in task.parameter_meta['bar']['suggestions']], [1, 2, 3])
 
+    def test_keywords(self):
+        templ = r"""
+        version 1.2
+
+        task foo {{
+            input {{
+            }}
+            String my_name = {}.name
+            command <<<
+                true
+            >>>
+            output {{
+            }}
+        }}
+        """
+
+        # An undefined name can parse but not typecheck
+        parsed = WDL.parse_document(templ.format("undef_name"))
+        try:
+            parsed.typecheck()
+            assert False
+        except WDL.Error.UnknownIdentifier as err:
+            self.assertIsInstance(err.pos.line, int)
+            self.assertIsInstance(err.pos.column, int)
+
+        # A general keyword can't parse
+        try:
+            WDL.parse_document(templ.format("struct"))
+            assert False
+        except WDL.Error.SyntaxError as err:
+            self.assertIsInstance(err.pos.line, int)
+            self.assertIsInstance(err.pos.column, int)
+
+        # "task" specifically can parse and typecheck
+        parsed = WDL.parse_document(templ.format("task")).typecheck()
+
     def test_requirements(self):
         task = WDL.parse_tasks("""
         task wc {
