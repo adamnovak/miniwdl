@@ -430,9 +430,7 @@ class _DocTransformer(_ExprTransformer):
         assert all(isinstance(item, tuple) and len(item) == 2 for item in items)
         for k, v in items:
             if k in d:
-                raise Error.MultipleDefinitions(
-                    self._sp(meta), f"duplicate keys in hint"
-                )
+                raise Error.MultipleDefinitions(self._sp(meta), f"duplicate keys in hint")
             d[k] = v
         return d
 
