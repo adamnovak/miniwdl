@@ -259,7 +259,7 @@ class _DocTransformer(_ExprTransformer):
 
     def get_name(self, meta, items) -> Expr.Base:
         ans = super().get_name(meta, items)
-        if items[1] not in ("left", "right"):
+        if items[1] not in ("left", "right") and (self._version != "1.2" or items[1] != "meta"):
             self._check_keyword(ans.pos, items[1])
         return ans
 

@@ -390,6 +390,9 @@ class TestTasks(unittest.TestCase):
         version 1.2
 
         task foo {{
+            meta {{
+                name: "Foo Task"
+            }}
             input {{
             }}
             String my_name = {}.name
@@ -422,6 +425,8 @@ class TestTasks(unittest.TestCase):
         parsed = WDL.parse_document(templ.format("task"))
         # TODO: we should also be able to typecheck, but this is not
         # implemented yet.
+        
+        parsed = WDL.parse_document(templ.format("task.meta"))
 
     def test_requirements(self):
         task = WDL.parse_tasks("""
